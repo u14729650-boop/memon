@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Spectator Scoreboard</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #1abc9c; color: white; padding: 50px; }
+        .score-display { display: flex; justify-content: space-around; font-size: 3em; margin-bottom: 20px; }
+        .score-item { padding: 20px; background-color: #2c3e50; border-radius: 10px; min-width: 200px; }
+        .name { font-size: 0.5em; margin-bottom: 10px; }
+        .score { font-size: 2em; font-weight: bold; }
+        .info-bar { font-size: 1.5em; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h1>LIVE BASKETBALL SCOREBOARD</h1>
+
+    <div class="score-display">
+        <div class="score-item home">
+            <div class="name" id="spectatorHomeName">HOME</div>
+            <div class="score" id="spectatorHomeScore">0</div>
+        </div>
+        <div class="score-item away">
+            <div class="name" id="spectatorAwayName">AWAY</div>
+            <div class="score" id="spectatorAwayScore">0</div>
+        </div>
+    </div>
+
+    <div class="info-bar">
+        <span id="spectatorTime">12:00</span> - QTR: <span id="spectatorQuarter">1</span>
+    </div>
+
+    <script>
+        // Function to update the Spectator page display
+        function updateDisplay(data) {
+            document.getElementById('spectatorHomeName').textContent = data.homeName;
+            document.getElementById('spectatorAwayName').textContent = data.awayName;
+            document.getElementById('spectatorHomeScore').textContent = data.homeScore;
+            document.getElementById('spectatorAwayScore').textContent = data.awayScore;
+            document.getElementById('spectatorQuarter').textContent = data.quarter;
+            document.getElementById('spectatorTime').textContent = data.time;
+        }
+
+        // 1. Initial Load: Load the score data immediately if it exists
+        window.onload = function() {
+            const storedState = localStorage.getItem('basketballScoreboard');
+            if (storedState) {
+                updateDisplay(JSON.parse(storedState));
+            }
+        };
+
+        // 2. Real-Time Update: Listen for changes from the Operator page
+        window.addEventListener('storage', (event) => {
+            // Check if the change was for our specific key
+            if (event.key === 'basketballScoreboard' && event.newValue) {
+                const newData = JSON.parse(event.newValue);
+                updateDisplay(newData);
+            }
+        });
+    </script>
+</body>
+</html>
